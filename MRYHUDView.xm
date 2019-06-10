@@ -153,8 +153,8 @@ BOOL useRingtoneCategory()
 		CGFloat duration = animated ? collapseAnimDuration : 0.;
 		[UIView animateWithDuration:duration animations:^{
 			self.containerView.frame = f;
-			[self setCornerRadius:radius];
 			slider.glyphVisible = NO;
+			[self setCornerRadius:radius];
 			[self.containerView layoutIfNeeded];
 		} completion:^(BOOL finished){
 			self.frame = collapsedF;
