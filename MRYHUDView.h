@@ -37,3 +37,11 @@
 @interface CALayer (Internal)
 @property (assign) BOOL continuousCorners;
 @end
+
+@interface MPVolumeController : NSObject
+@property (nonatomic,copy) NSString* volumeAudioCategory;
+@end
+
+@interface PSUISoundsPrefController : UIViewController
+-(BOOL)_canChangeRingtoneWithButtons;
+@end

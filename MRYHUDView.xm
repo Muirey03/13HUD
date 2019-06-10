@@ -44,6 +44,20 @@ static CGFloat currentCornerRadius = expandedCornerRadius;
 }
 %end
 
+//stop PSUISoundsPrefController crashing out:
+%hook SpringBoard
+%new
+-(id)rootController
+{
+	return [[UIApplication sharedApplication] keyWindow].rootViewController;
+}
+%end
+
+BOOL useRingtoneCategory()
+{
+	return [[[%c(PSUISoundsPrefController) alloc] init] _canChangeRingtoneWithButtons];
+}
+
 @implementation MRYHUDView
 {
 	UIVisualEffectView* blurView;
@@ -75,6 +89,13 @@ static CGFloat currentCornerRadius = expandedCornerRadius;
 		self.sliderVC = [[%c(CCUIContentModuleContainerViewController) alloc] initWithModuleIdentifier:@"com.apple.control-center.AudioModule" contentModule:self.audioModule];
 		self.sliderVC.view.frame = self.containerView.bounds;
 		self.sliderVC.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+		
+		if (useRingtoneCategory())
+		{
+			MPVolumeController* volControl = MSHookIvar<MPVolumeController*>(self.sliderVC.contentViewController, "_volumeController");
+			volControl.volumeAudioCategory = @"Ringtone";
+		}
+
 		[self.containerView addSubview:self.sliderVC.view];
 
 		//add as subview:
@@ -100,6 +121,9 @@ static CGFloat currentCornerRadius = expandedCornerRadius;
 	slider.continuousSliderCornerRadius = arg1;
 	//background:
 	[self.sliderVC.contentContainerView _setContinuousCornerRadius:arg1];
+	//force update:
+	[slider setNeedsLayout];
+	[slider layoutIfNeeded];
 }
 
 -(void)panStateChanged:(UIPanGestureRecognizer*)sender
@@ -162,3 +186,26 @@ static CGFloat currentCornerRadius = expandedCornerRadius;
 	}
 }
 @end
+
+//update volumeValue when ringer volume changes:
+#define kMRYRingerValueChanged @"com.muirey03.13hud.ringerchanged"
+%hook MPVolumeController
+-(id)init
+{
+	self = %orig;
+	if (self)
+	{
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateVolumeValue) name:kMRYRingerValueChanged object:nil];
+	}
+	return self;
+}
+%end
+
+//post notifications when ringer volume changes:
+%hook VolumeControl
+-(void)_effectiveVolumeChanged:(NSNotification*)note
+{
+	%orig;
+	[[NSNotificationCenter defaultCenter] postNotificationName:kMRYRingerValueChanged object:nil];
+}
+%end
