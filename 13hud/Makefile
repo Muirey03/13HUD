@@ -6,7 +6,7 @@ BUNDLE_NAME = 13HUD
 13HUD_FILES = HDDRootListController.m
 13HUD_INSTALL_PATH = /Library/PreferenceBundles
 13HUD_FRAMEWORKS = UIKit Preferences
-13HUD_LDFLAGS += -FFrameworks/
+13HUD_LDFLAGS += -F../Frameworks/
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
