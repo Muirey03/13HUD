@@ -1,0 +1,9 @@
+Package: com.muirey03.13hud
+Name: 13HUD
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: iOS 13 volume HUD for iOS 11/12
+Maintainer: Muirey03
+Author: Muirey03
+Section: Tweaks

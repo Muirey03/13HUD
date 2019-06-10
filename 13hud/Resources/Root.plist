@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Top Padding</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>kUseCustomYPadding</string>
+			<key>label</key>
+			<string>Custom top padding</string>
+			<key>defaults</key>
+			<string>com.muirey03.13hud</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>min</key>
+			<real>0</real>
+			<key>max</key>
+			<real>500</real>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>20</integer>
+			<key>default</key>
+			<real>75</real>
+			<key>defaults</key>
+			<string>com.muirey03.13hud</string>
+			<key>key</key>
+			<string>kYPadding</string>
+			<key>PostNotification</key>
+			<string>com.muirey03.13hud-prefsChanged</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Height</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>kUseCustomHeight</string>
+			<key>label</key>
+			<string>Custom height</string>
+			<key>defaults</key>
+			<string>com.muirey03.13hud</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>min</key>
+			<real>0</real>
+			<key>max</key>
+			<real>300</real>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>30</integer>
+			<key>default</key>
+			<real>150</real>
+			<key>defaults</key>
+			<string>com.muirey03.13hud</string>
+			<key>key</key>
+			<string>kHeight</string>
+			<key>PostNotification</key>
+			<string>com.muirey03.13hud-prefsChanged</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>13HUD</string>
+</dict>
+</plist>
