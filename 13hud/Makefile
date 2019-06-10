@@ -1,10 +1,12 @@
+ARCHS = armv7 arm64 arm64e
+
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = 13HUD
 13HUD_FILES = HDDRootListController.m
 13HUD_INSTALL_PATH = /Library/PreferenceBundles
-13HUD_FRAMEWORKS = UIKit
-13HUD_PRIVATE_FRAMEWORKS = Preferences
+13HUD_FRAMEWORKS = UIKit Preferences
+13HUD_LDFLAGS += -FFrameworks/
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
