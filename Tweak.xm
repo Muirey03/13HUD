@@ -2,7 +2,8 @@
 #import "MRYHUDView.h"
 
 #define screenHeight [UIScreen mainScreen].bounds.size.height
-#define animDuration 0.3
+#define screenWidth [UIScreen mainScreen].bounds.size.width
+#define animDuration 0.2
 #define dismissDelay 1.5
 #define collapseDelay 1.
 
@@ -11,31 +12,66 @@
 #define kYPadding PreferencesFloat(@"kYPadding", 75.)
 #define kUseCustomHeight PreferencesBool(@"kUseCustomHeight", NO)
 #define kHeight PreferencesFloat(@"kHeight", 150.)
+#define kHideRinger PreferencesBool(@"kHideRinger", NO)
 
 #define HUDXPadding 15.
 #define HUDHeightMultiplier 0.22
 #define HUDYMultiplier 0.22
 #define HUDWidth 60.
-#define HUDCollapsedWidth 15.
+#define HUDCollapsedWidth 12.
 CGRect expandedFrame()
 {
+	UIInterfaceOrientation orientation = [(SpringBoard*)[UIApplication sharedApplication] activeInterfaceOrientation];
+	BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
+
+	CGFloat yPadding;
+	CGFloat height;
+	CGFloat xPadding = HUDXPadding;
+
+	if (!landscape)
+	{
+		height = kUseCustomHeight ? kHeight : (screenHeight * HUDHeightMultiplier);
+		yPadding = kUseCustomYPadding ? kYPadding : ((screenHeight * HUDYMultiplier) - (height / 2));
+	}
+	else
+	{
+		height = screenWidth * 1./3.;
+		yPadding = (screenWidth - height) / 2;
+
+		if (orientation == UIInterfaceOrientationLandscapeRight)
+		{
+			xPadding = screenHeight - HUDWidth - HUDXPadding;
+		}
+	}
+	
 	//round height to nearest multiple of 2
-	CGFloat height = kUseCustomHeight ? kHeight : (screenHeight * HUDHeightMultiplier);
 	height = round(height);
 	if (((int)height % 2) != 0)
 		height++;
-	CGFloat yPadding = kUseCustomYPadding ? kYPadding : ((screenHeight * HUDYMultiplier) - ((screenHeight * HUDHeightMultiplier) / 2));
-	return CGRectMake(HUDXPadding, yPadding, HUDWidth, height);
+	
+	return CGRectMake(xPadding, yPadding, HUDWidth, height);
 }
 CGRect startFrame()
 {
 	CGRect f = expandedFrame();
-	return CGRectMake(f.size.width * -1., f.origin.y, f.size.width, f.size.height);
+	CGFloat xPosition = f.size.width * -1.;
+	UIInterfaceOrientation orientation = [(SpringBoard*)[UIApplication sharedApplication] activeInterfaceOrientation];
+	if (orientation == UIInterfaceOrientationLandscapeRight)
+	{
+		xPosition = screenWidth + f.size.width;
+	}
+	return CGRectMake(xPosition, f.origin.y, f.size.width, f.size.height);
 }
 CGRect collapsedFrame()
 {
 	CGRect f = expandedFrame();
-	return CGRectMake(f.origin.x, f.origin.y, HUDCollapsedWidth, f.size.height);
+	CGFloat xPosition = f.origin.x;
+	UIInterfaceOrientation orientation = [(SpringBoard*)[UIApplication sharedApplication] activeInterfaceOrientation];
+	if (orientation == UIInterfaceOrientationLandscapeRight)
+	{
+		xPosition = screenHeight - HUDXPadding - HUDCollapsedWidth;
+	}
+	return CGRectMake(xPosition, f.origin.y, HUDCollapsedWidth, f.size.height);
 }
 
 //prefs:
@@ -83,6 +119,7 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 			[self.mryHUD collapseAnimated:YES];
 		};
 
+		//collapse after a certain time
 		if (!self.collapseTimer.valid)
 		{
 			self.collapseTimer = [NSTimer scheduledTimerWithTimeInterval:collapseDelay
@@ -95,6 +132,9 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 	}
 	else
 	{
+		//remove old HUD:
+		if (kHideRinger)
+			oldHUD = nil;
 		%orig;
 	}
 }
@@ -105,6 +145,7 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 	%orig;
 }
 
+//create a brand new HUD
 %new
 -(void)createMRYHUD
 {
@@ -119,6 +160,7 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 	[hudWindow addSubview:self.mryHUD];
 }
 
+//show the HUD (animated)
 %new
 -(void)showMRYHUD
 {
@@ -135,6 +177,7 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 	}
 }
 
+//hide the HUD (animated)
 %new
 -(void)hideMRYHUD
 {
@@ -148,13 +191,15 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 	}
 }
 
+//is showing the MRYHUD
 %new
 -(BOOL)isHUDVisible
 {
-	return !self.mryHUD.hidden;
+	return self.mryHUD && !self.mryHUD.hidden;
 }
 %end
 
+//allow touches:
 %hook SBHUDWindow
 -(BOOL)_ignoresHitTest
 {

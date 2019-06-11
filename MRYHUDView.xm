@@ -34,13 +34,18 @@ static CGFloat currentCornerRadius = expandedCornerRadius;
 %end
 
 //animate fill:
+static BOOL finishedSetup = NO;
 %hook CCUIContentModuleContext
 +(void)performWithoutAnimationWhileHidden:(void(^)(void))arg1
 {
-	if ([(SBHUDController*)[%c(SBHUDController) sharedHUDController] isHUDVisible])
+	if (finishedSetup && [(SBHUDController*)[%c(SBHUDController) sharedHUDController] isHUDVisible])
+	{
 		arg1();
+	}
 	else
+	{
 		%orig;
+	}
 }
 %end
 
@@ -53,6 +58,7 @@ static CGFloat currentCornerRadius = expandedCornerRadius;
 }
 %end
 
+//should volume buttons change ringtone?
 BOOL useRingtoneCategory()
 {
 	return [[[%c(PSUISoundsPrefController) alloc] init] _canChangeRingtoneWithButtons];
@@ -68,6 +74,8 @@ BOOL useRingtoneCategory()
 	self = [super initWithFrame:frame];
 	if (self)
 	{
+		finishedSetup = NO;
+
 		//start off hidden and expanded:
 		self.hidden = YES;
 		self.expanded = YES;
@@ -96,6 +104,22 @@ BOOL useRingtoneCategory()
 			volControl.volumeAudioCategory = @"Ringtone";
 		}
 
+		//rotate glyphs if landscape:
+		CCUIVolumeSliderView* slider = MSHookIvar<CCUIVolumeSliderView*>(self.sliderVC.contentViewController, "_sliderView");
+		UIView* glyph1 = MSHookIvar<UIView*>(slider, "_glyphPackageView");
+		UIView* glyph2 = MSHookIvar<UIView*>(slider, "_compensatingGlyphPackageView");
+		UIInterfaceOrientation orientation = [(SpringBoard*)[UIApplication sharedApplication] activeInterfaceOrientation];
+		if (orientation == UIInterfaceOrientationLandscapeRight)
+		{
+			glyph1.transform = CGAffineTransformMakeRotation(90. * M_PI/180);
+			glyph2.transform = CGAffineTransformMakeRotation(90. * M_PI/180);
+		}
+		else if (orientation == UIInterfaceOrientationLandscapeLeft)
+		{
+			glyph1.transform = CGAffineTransformMakeRotation(-90. * M_PI/180);
+			glyph2.transform = CGAffineTransformMakeRotation(-90. * M_PI/180);
+		}
+
 		[self.containerView addSubview:self.sliderVC.view];
 
 		//add as subview:
@@ -107,6 +131,11 @@ BOOL useRingtoneCategory()
 		//gesture recognizer for touches began and ended:
 		UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panStateChanged:)];
 		[self addGestureRecognizer:panGesture];
+
+		//this is a hack...
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.05 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			finishedSetup = YES;
+		});
 	}
 	return self;
 }
@@ -126,6 +155,7 @@ BOOL useRingtoneCategory()
 	[slider layoutIfNeeded];
 }
 
+//expand when you drag your finger, collapse when you release
 -(void)panStateChanged:(UIPanGestureRecognizer*)sender
 {
 	if (sender.state == UIGestureRecognizerStateBegan)
@@ -152,12 +182,12 @@ BOOL useRingtoneCategory()
 		CGFloat radius = f.size.width / 2.;
 		CGFloat duration = animated ? collapseAnimDuration : 0.;
 		[UIView animateWithDuration:duration animations:^{
+			self.frame = collapsedF;
 			self.containerView.frame = f;
 			slider.glyphVisible = NO;
 			[self setCornerRadius:radius];
 			[self.containerView layoutIfNeeded];
-		} completion:^(BOOL finished){
-			self.frame = collapsedF;
+			[self setCornerRadius:radius];
 		}];
 	}
 }
@@ -175,8 +205,9 @@ BOOL useRingtoneCategory()
 
 		CGFloat radius = expandedCornerRadius;
 		CGFloat duration = animated ? collapseAnimDuration : 0.;
-		self.frame = expandedF;
+		
 		[UIView animateWithDuration:duration animations:^{
+			self.frame = expandedF;
 			self.containerView.frame = f;
 			self.sliderVC.view.frame = f;
 			[self setCornerRadius:radius];

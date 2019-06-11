@@ -10,6 +10,10 @@
 -(BOOL)isHUDVisible;
 @end
 
+@interface SpringBoard : NSObject
+-(UIInterfaceOrientation)activeInterfaceOrientation;
+@end
+
 CGRect expandedFrame();
 CGRect collapsedFrame();
 

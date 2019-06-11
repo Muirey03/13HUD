@@ -85,6 +85,25 @@
 			<key>PostNotification</key>
 			<string>com.muirey03.13hud-prefsChanged</string>
 		</dict>
+
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>General</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>key</key>
+			<string>kHideRinger</string>
+			<key>label</key>
+			<string>Hide ringer indicator</string>
+			<key>defaults</key>
+			<string>com.muirey03.13hud</string>
+		</dict>
 	</array>
 	<key>title</key>
 	<string>13HUD</string>

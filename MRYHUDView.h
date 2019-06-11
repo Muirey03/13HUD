@@ -24,6 +24,7 @@
 
 @interface CCUIVolumeSliderView : UIView
 @property (nonatomic, assign) CGFloat continuousSliderCornerRadius;
+@property (assign,nonatomic) CGFloat value;
 @property (nonatomic, assign) BOOL glyphVisible;
 @end
 
@@ -40,6 +41,7 @@
 
 @interface MPVolumeController : NSObject
 @property (nonatomic,copy) NSString* volumeAudioCategory;
+@property (assign,nonatomic) float volumeValue;
 @end
 
 @interface PSUISoundsPrefController : UIViewController
