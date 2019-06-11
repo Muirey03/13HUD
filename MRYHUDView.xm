@@ -47,17 +47,6 @@ static BOOL finishedSetup = NO;
 }
 %end
 
-//fix corner radius
-%hook CABackdropLayer
--(void)setCornerRadius:(CGFloat)arg1
-{
-	UIView* owner = (UIView*)self.delegate;
-	if ([owner.window isKindOfClass:%c(SBHUDWindow)] && [[owner _viewControllerForAncestor] isKindOfClass:%c(CCUIAudioModuleViewController)])
-		arg1 = 0.;
-	%orig;
-}
-%end
-
 //stop PSUISoundsPrefController crashing out:
 %hook SpringBoard
 %new
