@@ -147,7 +147,7 @@ BOOL useRingtoneCategory()
 	self.containerView.layer.cornerRadius = arg1;
 	//fill layer:
 	CCUIVolumeSliderView* slider = MSHookIvar<CCUIVolumeSliderView*>([self.sliderVC contentViewController], "_sliderView");
-	slider.continuousSliderCornerRadius = arg1;
+	//slider.continuousSliderCornerRadius = arg1;
 	UIView* bgView = MSHookIvar<UIView*>(slider, "_continuousValueBackgroundView");
 	UIView* backdrop = MSHookIvar<UIView*>(bgView, "_backdropView");
 	backdrop.layer.cornerRadius = arg1;
