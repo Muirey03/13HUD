@@ -20,8 +20,8 @@ static CGFloat currentCornerRadius = expandedCornerRadius;
 %hook CCUIVolumeSliderView
 -(void)setContinuousSliderCornerRadius:(CGFloat)arg1
 {
-	if ([self.window isKindOfClass:%c(SBHUDWindow)])
-		arg1 = currentCornerRadius;
+	if ([self.window isKindOfClass:%c(SBHUDWindow)] && arg1 != currentCornerRadius)
+		return;
 	%orig;
 }
 
@@ -148,6 +148,9 @@ BOOL useRingtoneCategory()
 	//fill layer:
 	CCUIVolumeSliderView* slider = MSHookIvar<CCUIVolumeSliderView*>([self.sliderVC contentViewController], "_sliderView");
 	slider.continuousSliderCornerRadius = arg1;
+	UIView* bgView = MSHookIvar<UIView*>(slider, "_continuousValueBackgroundView");
+	UIView* backdrop = MSHookIvar<UIView*>(bgView, "_backdropView");
+	backdrop.layer.cornerRadius = arg1;
 	//background:
 	[self.sliderVC.contentContainerView _setContinuousCornerRadius:arg1];
 	//force update:
@@ -210,9 +213,9 @@ BOOL useRingtoneCategory()
 			self.frame = expandedF;
 			self.containerView.frame = f;
 			self.sliderVC.view.frame = f;
-			[self setCornerRadius:radius];
 			slider.glyphVisible = YES;
 			[self.containerView layoutIfNeeded];
+			[self setCornerRadius:radius];
 		}];
 	}
 }
