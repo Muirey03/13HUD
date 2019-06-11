@@ -47,3 +47,10 @@
 @interface PSUISoundsPrefController : UIViewController
 -(BOOL)_canChangeRingtoneWithButtons;
 @end
+
+@interface CABackdropLayer : CALayer
+@end
+
+@interface UIView (Internal)
+-(UIViewController*)_viewControllerForAncestor;
+@end

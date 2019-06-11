@@ -48,13 +48,13 @@ static BOOL finishedSetup = NO;
 %end
 
 //fix corner radius
-%hook CCUIVolumeSliderView
--(void)layoutSubviews
+%hook CABackdropLayer
+-(void)setCornerRadius:(CGFloat)arg1
 {
+	UIView* owner = (UIView*)self.delegate;
+	if ([owner.window isKindOfClass:%c(SBHUDWindow)] && [[owner _viewControllerForAncestor] isKindOfClass:%c(CCUIAudioModuleViewController)])
+		arg1 = 0.;
 	%orig;
-	UIView* bgView = MSHookIvar<UIView*>(self, "_continuousValueBackgroundView");
-	UIView* backdrop = MSHookIvar<UIView*>(bgView, "_backdropView");
-	backdrop.layer.cornerRadius = 0.;
 }
 %end
 
