@@ -152,9 +152,6 @@ BOOL useRingtoneCategory()
 	backdrop.layer.cornerRadius = 0.;
 	//background:
 	[self.sliderVC.contentContainerView _setContinuousCornerRadius:arg1];
-	//force update:
-	[slider setNeedsLayout];
-	[slider layoutIfNeeded];
 }
 
 //expand when you drag your finger, collapse when you release
