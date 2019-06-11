@@ -4,8 +4,6 @@
 #define expandedCornerRadius 17.
 #define collapseAnimDuration 0.3
 
-static CGFloat currentCornerRadius = expandedCornerRadius;
-
 //stop slider overriding HUD:
 %hook CCUIAudioModuleViewController
 -(BOOL)isOnScreen
@@ -46,6 +44,17 @@ static BOOL finishedSetup = NO;
 	{
 		%orig;
 	}
+}
+%end
+
+//fix corner radius
+%hook CCUIVolumeSliderView
+-(void)layoutSubviews
+{
+	%orig;
+	UIView* bgView = MSHookIvar<UIView*>(self, "_continuousValueBackgroundView");
+	UIView* backdrop = MSHookIvar<UIView*>(bgView, "_backdropView");
+	backdrop.layer.cornerRadius = 0.;
 }
 %end
 
