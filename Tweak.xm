@@ -220,16 +220,20 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 
 %ctor
 {
-	//load volume module:
-	NSString* bundlePath = @"/System/Library/ControlCenter/Bundles/AudioModule.bundle";
-	NSBundle* volumeBundle = [NSBundle bundleWithPath:bundlePath];
-	if (!volumeBundle.loaded)
-		[volumeBundle load];
+	//load bundles:
+	NSArray* bundles = @[
+		@"/System/Library/ControlCenter/Bundles/AudioModule.bundle",
+		@"/System/Library/PrivateFrameworks/ControlCenterUIKit.framework",
+		@"/System/Library/PrivateFrameworks/ControlCenterServices.framework",
+		@"/System/Library/PrivateFrameworks/ControlCenterUI.framework"
+	];
 
-	//load CCUI module:
-	bundlePath = @"/System/Library/PrivateFrameworks/ControlCenterUIKit.framework";
-	NSBundle* ccBundle = [NSBundle bundleWithPath:bundlePath];
-	if (!ccBundle.loaded)
-		[ccBundle load];
+	for (NSString* bundlePath in bundles)
+	{
+		NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
+		if (!bundle.loaded)
+			[bundle load];
+	}
+	
 	%init;
 }
