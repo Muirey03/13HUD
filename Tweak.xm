@@ -225,5 +225,11 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 	NSBundle* volumeBundle = [NSBundle bundleWithPath:bundlePath];
 	if (!volumeBundle.loaded)
 		[volumeBundle load];
+
+	//load CCUI module:
+	bundlePath = @"/System/Library/PrivateFrameworks/ControlCenterUIKit.framework";
+	NSBundle* ccBundle = [NSBundle bundleWithPath:bundlePath];
+	if (!ccBundle.loaded)
+		[ccBundle load];
 	%init;
 }

@@ -54,3 +54,6 @@
 @interface UIView (Internal)
 -(UIViewController*)_viewControllerForAncestor;
 @end
+
+@interface SBHUDWindow : UIWindow
+@end
