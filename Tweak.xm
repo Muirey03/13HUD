@@ -235,5 +235,8 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 			[bundle load];
 	}
 	
-	%init;
+	//wait for necessary frameworks to load:
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		%init;
+	});
 }
