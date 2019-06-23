@@ -220,6 +220,7 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 
 %ctor
 {
+	HUDLog(@"start");
 	//load bundles:
 	NSArray* bundles = @[
 		@"/System/Library/ControlCenter/Bundles/AudioModule.bundle",
@@ -233,10 +234,12 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 		NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
 		if (!bundle.loaded)
 			[bundle load];
+		HUDLog(@"bundle: %@, loaded: %d", bundle, bundle.loaded);
 	}
 	
 	//wait for necessary frameworks to load:
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		HUDLog(@"class: %@", %c(CCUIVolumeSliderView));
 		%init;
 	});
 }
