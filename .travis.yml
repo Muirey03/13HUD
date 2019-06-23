@@ -9,7 +9,7 @@ before_install:
 - brew install dpkg ldid
 - git clone --recursive git://github.com/theos/theos.git ~/theos
 script:
-- make clean package FINALPACKAGE=1
+- make clean package
 before_deploy:
 - git config --local user.name "Muirey03"
 - git config --local user.email "tommy.muir@btinternet.com"
