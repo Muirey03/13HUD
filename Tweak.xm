@@ -218,6 +218,26 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 }
 %end
 
+//override corner radius of fill layer:
+void (*oldSetCornerRadius)(CCUIVolumeSliderView* self, SEL _cmd, CGFloat arg1);
+void newSetCornerRadius(CCUIVolumeSliderView* self, SEL _cmd, CGFloat arg1)
+{
+	HUDLog(@"called 1");
+	if ([self.window isKindOfClass:%c(SBHUDWindow)])
+		arg1 = 0.;
+	(*oldSetCornerRadius)(self, _cmd, arg1);
+}
+
+//stop HUD from collapsing when being changed:
+void (*oldHandleValueChanged)(CCUIVolumeSliderView* self, SEL _cmd, id arg1);
+void newHandleValueChanged(CCUIVolumeSliderView* self, SEL _cmd, id arg1)
+{
+	HUDLog(@"called 2");
+	(*oldHandleValueChanged)(self, _cmd, arg1);
+	if ([self.window isKindOfClass:%c(SBHUDWindow)])
+		[[[%c(SBHUDController) sharedHUDController] collapseTimer] invalidate];
+}
+
 %ctor
 {
 	HUDLog(@"start");
@@ -239,7 +259,8 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 	
 	//wait for necessary frameworks to load:
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		HUDLog(@"class: %@", %c(CCUIVolumeSliderView));
 		%init;
+		MSHookMessageEx(%c(CCUIVolumeSliderView), @selector(setContinuousSliderCornerRadius:), (IMP)&newSetCornerRadius, (IMP*)&oldSetCornerRadius);
+		MSHookMessageEx(%c(CCUIVolumeSliderView), @selector(_handleValueChangeGestureRecognizer:), (IMP)&newHandleValueChanged, (IMP*)&oldHandleValueChanged);
 	});
 }
