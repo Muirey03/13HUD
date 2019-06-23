@@ -90,6 +90,64 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
+			<string>Timeout</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>min</key>
+			<real>0.5</real>
+			<key>max</key>
+			<real>2.5</real>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>8</integer>
+			<key>default</key>
+			<real>1.5</real>
+			<key>defaults</key>
+			<string>com.muirey03.13hud</string>
+			<key>key</key>
+			<string>kTimeout</string>
+			<key>PostNotification</key>
+			<string>com.muirey03.13hud-prefsChanged</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Collapse timeout</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>min</key>
+			<real>0.5</real>
+			<key>max</key>
+			<real>2.5</real>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>8</integer>
+			<key>default</key>
+			<real>1</real>
+			<key>defaults</key>
+			<string>com.muirey03.13hud</string>
+			<key>key</key>
+			<string>kCollapseTimeout</string>
+			<key>PostNotification</key>
+			<string>com.muirey03.13hud-prefsChanged</string>
+		</dict>
+
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
 			<string>General</string>
 		</dict>
 		<dict>

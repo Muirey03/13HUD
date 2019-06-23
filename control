@@ -1,7 +1,8 @@
 Package: com.muirey03.13hud
 Name: 13HUD
-Depends: mobilesubstrate
-Version: 0.0.1
+Depends: mobilesubstrate, preferenceloader
+Conflicts: applebetas.ios.tweak.willow, es.ubikstyl.sonus12, org.fwdr.sonus, com.midkin.byebyehud, me.nepeta.flashyhud, com.lnx.aerify, com.ruler225.videohud, me.nepeta.brokenhud
+Version: 1.0.0
 Architecture: iphoneos-arm
 Description: iOS 13 volume HUD for iOS 11/12
 Maintainer: Muirey03

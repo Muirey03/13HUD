@@ -4,8 +4,6 @@
 #define screenHeight [UIScreen mainScreen].bounds.size.height
 #define screenWidth [UIScreen mainScreen].bounds.size.width
 #define animDuration 0.2
-#define dismissDelay 1.5
-#define collapseDelay 1.
 
 //prefs:
 #define kUseCustomYPadding PreferencesBool(@"kUseCustomYPadding", NO)
@@ -13,6 +11,8 @@
 #define kUseCustomHeight PreferencesBool(@"kUseCustomHeight", NO)
 #define kHeight PreferencesFloat(@"kHeight", 150.)
 #define kHideRinger PreferencesBool(@"kHideRinger", NO)
+#define dismissDelay PreferencesFloat(@"kTimeout", 1.5)
+#define collapseDelay PreferencesFloat(@"kCollapseTimeout", 1.)
 
 #define HUDXPadding 15.
 #define HUDHeightMultiplier 0.22
@@ -222,7 +222,6 @@ CGFloat PreferencesFloat(NSString* key, CGFloat fallback)
 void (*oldSetCornerRadius)(CCUIVolumeSliderView* self, SEL _cmd, CGFloat arg1);
 void newSetCornerRadius(CCUIVolumeSliderView* self, SEL _cmd, CGFloat arg1)
 {
-	HUDLog(@"called 1");
 	if ([self.window isKindOfClass:%c(SBHUDWindow)])
 		arg1 = 0.;
 	(*oldSetCornerRadius)(self, _cmd, arg1);
@@ -232,7 +231,6 @@ void newSetCornerRadius(CCUIVolumeSliderView* self, SEL _cmd, CGFloat arg1)
 void (*oldHandleValueChanged)(CCUIVolumeSliderView* self, SEL _cmd, id arg1);
 void newHandleValueChanged(CCUIVolumeSliderView* self, SEL _cmd, id arg1)
 {
-	HUDLog(@"called 2");
 	(*oldHandleValueChanged)(self, _cmd, arg1);
 	if ([self.window isKindOfClass:%c(SBHUDWindow)])
 		[[[%c(SBHUDController) sharedHUDController] collapseTimer] invalidate];
@@ -240,7 +238,6 @@ void newHandleValueChanged(CCUIVolumeSliderView* self, SEL _cmd, id arg1)
 
 %ctor
 {
-	HUDLog(@"start");
 	//load bundles:
 	NSArray* bundles = @[
 		@"/System/Library/ControlCenter/Bundles/AudioModule.bundle",
@@ -254,13 +251,10 @@ void newHandleValueChanged(CCUIVolumeSliderView* self, SEL _cmd, id arg1)
 		NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
 		if (!bundle.loaded)
 			[bundle load];
-		HUDLog(@"bundle: %@, loaded: %d", bundle, bundle.loaded);
 	}
 	
-	//wait for necessary frameworks to load:
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		%init;
-		MSHookMessageEx(%c(CCUIVolumeSliderView), @selector(setContinuousSliderCornerRadius:), (IMP)&newSetCornerRadius, (IMP*)&oldSetCornerRadius);
-		MSHookMessageEx(%c(CCUIVolumeSliderView), @selector(_handleValueChangeGestureRecognizer:), (IMP)&newHandleValueChanged, (IMP*)&oldHandleValueChanged);
-	});
+	%init;
+	//I couldn't get logos to work, so let's do it manually
+	MSHookMessageEx(%c(CCUIVolumeSliderView), @selector(setContinuousSliderCornerRadius:), (IMP)&newSetCornerRadius, (IMP*)&oldSetCornerRadius);
+	MSHookMessageEx(%c(CCUIVolumeSliderView), @selector(_handleValueChangeGestureRecognizer:), (IMP)&newHandleValueChanged, (IMP*)&oldHandleValueChanged);
 }
