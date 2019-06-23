@@ -18,7 +18,7 @@
 %hook CCUIVolumeSliderView
 -(void)setContinuousSliderCornerRadius:(CGFloat)arg1
 {
-	if ([self.window isKindOfClass:%c(SBHUDWindow)])
+	//if ([self.window isKindOfClass:%c(SBHUDWindow)])
 		arg1 = 0.;
 	%orig;
 }
@@ -26,7 +26,7 @@
 -(void)_handleValueChangeGestureRecognizer:(id)arg1
 {
 	%orig;
-	if ([self.window isKindOfClass:%c(SBHUDWindow)])
+	//if ([self.window isKindOfClass:%c(SBHUDWindow)])
 		[[[%c(SBHUDController) sharedHUDController] collapseTimer] invalidate];
 }
 %end
