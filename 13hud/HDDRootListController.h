@@ -1,5 +1,6 @@
 #import <Preferences/PSListController.h>
+#import "Headers/CepheiPrefs/HBRootListController.h"
 
-@interface HDDRootListController : PSListController
+@interface HDDRootListController : HBRootListController
 
 @end
