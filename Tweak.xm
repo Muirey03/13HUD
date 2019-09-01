@@ -10,6 +10,7 @@
 #define kYPadding PreferencesFloat(@"kYPadding", 75.)
 #define kUseCustomHeight PreferencesBool(@"kUseCustomHeight", NO)
 #define kHeight PreferencesFloat(@"kHeight", 150.)
+#define kWidth PreferencesFloat(@"kWidth", 50.)
 #define kHideRinger PreferencesBool(@"kHideRinger", NO)
 #define dismissDelay PreferencesFloat(@"kTimeout", 1.5)
 #define collapseDelay PreferencesFloat(@"kCollapseTimeout", 1.)
@@ -17,7 +18,6 @@
 #define HUDXPadding 15.
 #define HUDHeightMultiplier 0.22
 #define HUDYMultiplier 0.22
-#define HUDWidth 60.
 #define HUDCollapsedWidth 12.
 CGRect expandedFrame()
 {
@@ -40,7 +40,7 @@ CGRect expandedFrame()
 
 		if (orientation == UIInterfaceOrientationLandscapeRight)
 		{
-			xPadding = screenHeight - HUDWidth - HUDXPadding;
+			xPadding = screenHeight - kWidth - HUDXPadding;
 		}
 	}
 	
@@ -49,7 +49,7 @@ CGRect expandedFrame()
 	if (((int)height % 2) != 0)
 		height++;
 	
-	return CGRectMake(xPadding, yPadding, HUDWidth, height);
+	return CGRectMake(xPadding, yPadding, kWidth, height);
 }
 CGRect startFrame()
 {
